@@ -8,6 +8,11 @@ from airbnb.airbnb import Airbnb
 model = joblib.load('./model/extratrees.joblib')
 app = Flask(__name__)
 
+@app.route('/', methods = ['GET'])
+def index():
+    return 'Pagina inicial!'
+
+
 @app.route('/predict', methods = ['POST'])
 def predict_country():
 
