@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, render_template
 import joblib
 import json
 import pandas as pd
@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
 def index():
-    return 'Pagina inicial!'
+    return render_template('index.html') 
 
 
 @app.route('/predict', methods = ['POST'])
