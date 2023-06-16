@@ -41,7 +41,6 @@ class Airbnb:
 
         return df, df_sessions
 
-
     def feature_engineering(self, df, df_sessions):
 
         df['first_active'] = pd.to_datetime(df['timestamp_first_active'].dt.strftime('%Y-%m-%d'))
