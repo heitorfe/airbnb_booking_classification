@@ -14,7 +14,6 @@ class Airbnb:
 
     def transform_data(self, df, df_sessions):
         #==================Training================
-
         #age
         age_mean = df['age'].mean()
         df['age'] = df['age'].fillna(age_mean)
@@ -63,7 +62,6 @@ class Airbnb:
         #week of year of first active
         df['week_of_year_first_active'] = df['first_active'].dt.isocalendar().week
 
-
         #year  of account created
         df['year_account_created'] = df['date_account_created'].dt.year
 
@@ -91,7 +89,7 @@ class Airbnb:
         return df
 
     def data_preprocessing(self, df):
-
+        
         # language to binary, either is english or not
         df['language_en'] = np.where(df['language']=='en', 1, 0)
 
@@ -124,22 +122,7 @@ class Airbnb:
         ]
 
         scaler = pp.MinMaxScaler()
-
         df[columns_to_rescale] = scaler.fit_transform(df[columns_to_rescale])
-
-        # temporal columns 
-        temporal_columns = [
-        "days_from_active_to_account_created",
-        "year_first_active",
-        "month_first_active",
-        "day_first_active",
-        "day_of_week_first_active",
-        "week_of_year_first_active",
-        "year_account_created",
-        "month_account_created",
-        "day_account_created",
-        "day_of_week_account_created",
-        "week_of_year_account_created"]
 
          # month_account_created
         df['month_account_created_sin'] = df['month_account_created'].apply( lambda x: np.sin( x * (2*np.pi/12 ) ) )
@@ -157,22 +140,16 @@ class Airbnb:
         df['day_of_week_account_created_sin'] = df['day_of_week_account_created'].apply( lambda x: np.sin( x * (2*np.pi/7 ) ) )
         df['day_of_week_account_created_cos'] = df['day_of_week_account_created'].apply( lambda x: np.cos( x * (2*np.pi/7 ) ) )
 
-        df.drop(temporal_columns, axis=1, inplace=True)
+        X = df[['age', 'signup_flow', 'affiliate_channel', 'affiliate_provider',
+                 'first_browser', 'n_clicks', 'n_reviews',
+                 'language_en', 'signup_on_web', 'tracked', 'first_device_apple',
+                 'first_device_desktop', 'month_account_created_sin',
+                 'month_account_created_cos', 'week_account_created_sin',
+                 'week_account_created_cos', 'day_account_created_sin',
+                 'day_account_created_cos', 'day_of_week_account_created_sin',
+                 'day_of_week_account_created_cos']]
 
-        cols_drop = [ 'gender', 'signup_method', 'language', 'first_affiliate_tracked',
-               'signup_app', 'first_device_type','date_account_created', 'timestamp_first_active',
-                      'first_active'] #original dates
-        df = df.drop(cols_drop, axis=1)
-        return df
+        return X
 
-    def train_model(self, model, X, y):
-        
-        X_train, X_test, y_train, y_test = ms.train_test_split(X, y, train_size = 0.8, random_state=42)
-        
-        model.fit(X_train, y_train)
-        
-        return model
-    
-    def predict(self, model, X_test):
-        
+    def predict(self, model, X_test):  
         return model.predict_proba(X_test)

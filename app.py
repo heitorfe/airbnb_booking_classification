@@ -26,9 +26,7 @@ def predict_country():
             df_sessions = pipeline.load_data()
             df, df_sessions = pipeline.transform_data(df_raw, df_sessions)
             df = pipeline.feature_engineering(df_raw, df_sessions)
-            df = pipeline.data_preprocessing(df)
-
-            X = df.drop('id', axis = 1)
+            X = pipeline.data_preprocessing(df)
 
             predicted_country_destinations_proba = pipeline.predict(model, X)
 
@@ -69,4 +67,4 @@ def predict_country():
     
 
 if __name__ == '__main__':
-    app.run(debug=True, host = '0.0.0.0', port = 80 )
+    app.run(debug=True, host = '0.0.0.0', port = 5000 )
